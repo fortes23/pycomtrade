@@ -323,9 +323,9 @@ class ComtradeRecord(object):
 
         @return timestamp vector.
         '''
-        t_interval = 1/float(self.cfg_data['samp'][-1])
+        t_interval = 1 / float(self.cfg_data['samp'][-1])
         n_samples = self.cfg_data['endsamp'][-1]
-        t_end = n_samples*t_interval
+        t_end = n_samples * t_interval
         return np.linspace(0, t_end, n_samples)
 
     def get_analog_ids(self):
@@ -403,14 +403,14 @@ class ComtradeRecord(object):
         # Getting auxiliary variables
         nA = self.cfg_data['#A']
         nD = self.cfg_data['#D']
-        nH = int(np.ceil(nD/16.0))
+        nH = int(np.ceil(nD / 16.0))
         nS = self.cfg_data['endsamp'][-1]
 
         # Setting struct string
         str_struct = "ii{0}h".format(nA + nH)
 
         # Number of bytes per sample
-        nbps = 4+4+nA*2+nH*2
+        nbps = 4 + 4 + nA * 2 + nH * 2
 
         # For each channel
         for cidx in range(self.cfg_data['#A']):
@@ -420,9 +420,9 @@ class ComtradeRecord(object):
             for sidx in range(nS):
 
                 # Unpacking data
-                data = self.bdata[sidx*nbps:(sidx+1)*nbps]
+                data = self.bdata[sidx * nbps:(sidx + 1) * nbps]
                 data = struct.unpack(str_struct, data)
-                values.append(data[cidx+2])
+                values.append(data[cidx + 2])
 
             # Converting values
             values = np.array(values)
@@ -438,32 +438,32 @@ class ComtradeRecord(object):
         # Getting auxiliary variables
         nA = self.cfg_data['#A']
         nD = self.cfg_data['#D']
-        nH = int(np.ceil(nD/16.0))
+        nH = int(np.ceil(nD / 16.0))
         nS = self.cfg_data['endsamp'][-1]
 
         # Setting struct string
         str_struct = "ii{0}h{1}H".format(nA, nH)
 
         # Number of bytes per sample
-        nbps = 4+4+nA*2+nH*2
+        nbps = 4 + 4 + nA * 2 + nH * 2
 
         # For each channel
         for cidx in range(self.cfg_data['#D']):
 
             # Byte number
-            bnum = int(np.ceil(cidx/16))
+            bnum = int(np.ceil(cidx / 16))
 
             # Digital channel value
-            dchan_val = (1 << (cidx-(bnum-1)*16))
+            dchan_val = (1 << (cidx - (bnum - 1) * 16))
 
             # Setting initial values
             values = []
             for sidx in range(nS):
 
                 # Unpacking data
-                data = self.bdata[sidx*nbps:(sidx+1)*nbps]
+                data = self.bdata[sidx * nbps:(sidx + 1) * nbps]
                 data = struct.unpack(str_struct, data)
-                data = (dchan_val & data[nA+1+bnum]) * 1/dchan_val
+                data = (dchan_val & data[nA + 1 + bnum]) * 1 / dchan_val
                 values.append(data)
 
             # Converting values
